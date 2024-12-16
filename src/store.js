@@ -1,16 +1,22 @@
-import { createStore } from "redux";
+import { combineReducers, createStore } from "redux";
 
 // O redux nada mais é que um gerenciador de estado global. Os estados são gerenciados através da store, um conjunto de reducers que executarão as atualizações.
 
-// createStore é uma função
+// createStore é uma função obsoleta que foi substituída no RTK
 
-const initialState = {
+const initialStateAccount = {
   balance: 0,
   loan: 0,
   loanPurpose: "",
 };
 
-function reducer(state = initialState, action) {
+const initialStateCustomer = {
+  fullName: "",
+  nationalID: "",
+  createdAt: "",
+};
+
+function accountReducer(state = initialStateAccount, action) {
   switch (action.type) {
     case "account/deposit":
       return { ...state, balance: state.balance + action.payload };
@@ -37,7 +43,31 @@ function reducer(state = initialState, action) {
   }
 }
 
-const store = createStore(reducer);
+function customerReducer(state = initialStateCustomer, action) {
+  switch (action.type) {
+    case "customer/createCustomer":
+      return {
+        ...state,
+        fullName: action.payload.fullName,
+        nationalID: action.payload.nationalID,
+        createdAt: action.payload.createdAt,
+      };
+    case "customer/updateName":
+      return {
+        ...state,
+        fullName: action.payload.fullName,
+      };
+    default:
+      return state;
+  }
+}
+// Root reducer: O reducer que combinará todos os outros
+const rootReducers = combineReducers({
+  account: accountReducer,
+  customer: customerReducer,
+});
+
+const store = createStore(rootReducers);
 // store.dispatch({ type: "account/deposit", payload: 50 });
 
 // console.log("teste");
@@ -76,4 +106,18 @@ store.dispatch(requestLoan(10000, "Buy a car"));
 console.log(store.getState());
 
 store.dispatch(payLoan());
+console.log(store.getState());
+
+function createCustomer(fullName, nationalID) {
+  return {
+    type: "customer/createCustomer",
+    payload: { fullName, nationalID, createdAt: new Date().toISOString() },
+  };
+}
+
+function updateName(fullName) {
+  return { type: "account/updateName", payload: fullName };
+}
+
+store.dispatch(createCustomer("Miguel Willians", 1144845));
 console.log(store.getState());
