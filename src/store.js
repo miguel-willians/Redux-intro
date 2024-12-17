@@ -1,5 +1,7 @@
 import { applyMiddleware, combineReducers, createStore } from "redux";
 
+import { composeWithDevTools } from "@redux-devtools/extension";
+
 // Redux thunk: Permite a utilização de ações assíncronas atualizando o estado antes do dispatch chegar na store.
 import { thunk } from "redux-thunk";
 
@@ -12,6 +14,9 @@ const rootReducer = combineReducers({
 });
 
 // As ações assíncronas ocorrem no Middleware:
-const store = createStore(rootReducer, applyMiddleware(thunk));
+const store = createStore(
+  rootReducer,
+  composeWithDevTools(applyMiddleware(thunk))
+);
 
 export default store;
