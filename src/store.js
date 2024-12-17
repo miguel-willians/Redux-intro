@@ -1,22 +1,16 @@
-import { applyMiddleware, combineReducers, createStore } from "redux";
+//Essa é a maneira mais atualizada de se criar uma store
 
-import { composeWithDevTools } from "@redux-devtools/extension";
-
-// Redux thunk: Permite a utilização de ações assíncronas atualizando o estado antes do dispatch chegar na store.
-import { thunk } from "redux-thunk";
+// O configureStore altomaticamente configura o devtools e o middleware, além de combinar os reducers
+import { configureStore } from "@reduxjs/toolkit";
 
 import accountReducer from "./features/accounts/accountSlice";
 import customerReducer from "./features/customers/customerSlice";
 
-const rootReducer = combineReducers({
-  account: accountReducer,
-  customer: customerReducer,
+const store = configureStore({
+  reducer: {
+    account: accountReducer,
+    customer: customerReducer,
+  },
 });
-
-// As ações assíncronas ocorrem no Middleware:
-const store = createStore(
-  rootReducer,
-  composeWithDevTools(applyMiddleware(thunk))
-);
 
 export default store;
